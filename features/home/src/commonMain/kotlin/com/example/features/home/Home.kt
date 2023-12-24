@@ -8,18 +8,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import com.bijan.apis.product.ProductApi
+import com.bijan.apis.product.ProductRepository
 import com.bijan.apis.product.models.ProductResponseModel
 import com.bijan.libraries.core.viewModel.rememberViewModel
 
 
 @Composable
 fun Home(){
-    val productApi = remember {
-        ProductApi()
+    val productRepository = remember {
+        ProductRepository()
     }
     val homeViewModel = rememberViewModel {
-        HomeViewModel(productApi)
+        HomeViewModel(productRepository)
     }
 
     val products by homeViewModel.produts.collectAsState()
