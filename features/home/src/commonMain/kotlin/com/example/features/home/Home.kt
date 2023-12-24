@@ -10,13 +10,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import com.bijan.apis.product.ProductRepository
 import com.bijan.apis.product.models.ProductResponseModel
+import com.bijan.libraries.core.LocalAppConfig
 import com.bijan.libraries.core.viewModel.rememberViewModel
 
 
 @Composable
 fun Home(){
+    val appConfig = LocalAppConfig.current
+
     val productRepository = remember {
-        ProductRepository()
+        ProductRepository(appConfig)
     }
     val homeViewModel = rememberViewModel {
         HomeViewModel(productRepository)
