@@ -1,10 +1,12 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.compose.ExperimentalComposeLibrary
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.buildKonfig)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -29,10 +31,7 @@ kotlin {
     
     sourceSets {
         
-        androidMain.dependencies {
-            implementation(libs.compose.ui.tooling.preview)
-            implementation(libs.androidx.activity.compose)
-        }
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -40,7 +39,17 @@ kotlin {
             implementation(compose.ui)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
+            implementation(projects.apis.product)
+            implementation(projects.features.home)
+            implementation(projects.libraries.core)
         }
+
+        androidMain.dependencies {
+            implementation(libs.compose.ui.tooling.preview)
+            implementation(libs.androidx.activity.compose)
+        }
+
+        iosMain.dependencies {  }
     }
 }
 
@@ -77,4 +86,15 @@ android {
         debugImplementation(libs.compose.ui.tooling)
     }
 }
+dependencies {
+    implementation(project(":libraries:core"))
+}
 
+buildkonfig {
+    packageName = "com.bijan.tokohijau"
+
+    // default config is required
+    defaultConfigs {
+        buildConfigField(STRING, "BASE_URL", "https://marketfake.fly.dev/")
+    }
+}
