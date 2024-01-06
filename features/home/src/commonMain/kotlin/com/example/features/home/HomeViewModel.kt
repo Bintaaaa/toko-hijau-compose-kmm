@@ -6,10 +6,10 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class HomeViewModel(private val productApi: ProductRepository) : ViewModel<HomeState>(HomeState()) {
+class HomeViewModel(private val productRepository: ProductRepository) : ViewModel<HomeState>(HomeState()) {
 
-    fun getProducts() = viewModelScope.launch {
-        productApi
+     fun getProducts() = viewModelScope.launch {
+        productRepository
             .getProducts()
             .stateIn(this)
             .collectLatest {
