@@ -31,8 +31,12 @@ fun Home(){
     val homeState by homeViewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit){
-        homeViewModel.updateName(name = "Bijan")
-        homeViewModel.getProducts()
+        homeViewModel.sendIntent(
+            HomeIntent.SetName("Bijan")
+        )
+        homeViewModel.sendIntent(
+            HomeIntent.GetProducts
+        )
     }
 
     LazyColumn {

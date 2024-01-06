@@ -25,7 +25,7 @@ actual abstract  class ViewModelPlatform : LifecycleViewModel() {
 }
 
 @Composable
-actual  fun <T: ViewModel<*>> rememberViewModel(isRetain: Boolean, viewModel: () ->  T): T{
+actual  fun <T: ViewModel<*,*>> rememberViewModel(isRetain: Boolean, viewModel: () ->  T): T{
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val host = LocalViewModelHost.current
     val vm = remember {
