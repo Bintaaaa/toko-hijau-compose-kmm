@@ -1,5 +1,6 @@
 package com.bijan.apis.product
 
+import androidx.compose.runtime.compositionLocalOf
 import com.bijan.apis.product.models.ProductMapper
 import com.bijan.apis.product.models.ProductResponseModel
 import com.bijan.apis.product.models.ProductsResponseModel
@@ -7,7 +8,6 @@ import com.bijan.libraries.core.AppConfig
 import com.bijan.libraries.core.repository.RepositoryReducer
 import com.bijan.libraries.core.state.AsyncState
 import io.ktor.client.call.body
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onStart
 
@@ -32,3 +32,5 @@ class ProductRepository(private val appConfig: AppConfig) : RepositoryReducer() 
 
     }
 }
+
+val LocalProductRepository = compositionLocalOf<ProductRepository> { error("ProductRepository not provide") }
