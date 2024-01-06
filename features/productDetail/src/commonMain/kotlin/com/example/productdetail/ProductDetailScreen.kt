@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 
 
 @Composable
-fun ProductDetail(name: String){
+fun ProductDetailScreen(name: String){
     Text(
         text = name,
     )
