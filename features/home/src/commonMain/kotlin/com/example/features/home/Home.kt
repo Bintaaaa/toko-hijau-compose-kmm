@@ -8,6 +8,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.text.font.FontWeight
 import com.bijan.apis.product.ProductRepository
 import com.bijan.apis.product.models.ProductResponseModel
 import com.bijan.libraries.core.LocalAppConfig
@@ -25,13 +26,21 @@ fun Home(){
         HomeViewModel(productRepository)
     }
 
-    val products by homeViewModel.produts.collectAsState()
+    val products by homeViewModel.products.collectAsState()
+    val homeState by homeViewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit){
+        homeViewModel.updateName(name = "Bijan")
         homeViewModel.getProducts()
     }
 
     LazyColumn {
+        item {
+            Text(
+                text = homeState.name,
+                fontWeight = FontWeight.Bold
+            )
+        }
         items(products){
             ProductItem(it)
         }

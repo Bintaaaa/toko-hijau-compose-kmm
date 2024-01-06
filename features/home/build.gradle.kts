@@ -57,3 +57,6 @@ android {
         minSdk = 24
     }
 }
+dependencies {
+    implementation(libs.androidx.room.ktx)
+}

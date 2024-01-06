@@ -9,7 +9,7 @@ import kotlinx.coroutines.cancel
 import androidx.lifecycle.ViewModel as LifecycleViewModel
 import androidx.lifecycle.viewModelScope as lifecycleViewModelScope
 
-actual abstract  class ViewModel : LifecycleViewModel() {
+actual abstract  class ViewModelPlatform : LifecycleViewModel() {
     actual val viewModelScope: CoroutineScope
         get() = lifecycleViewModelScope
 
@@ -25,7 +25,7 @@ actual abstract  class ViewModel : LifecycleViewModel() {
 }
 
 @Composable
-actual  fun <T: ViewModel> rememberViewModel(isRetain: Boolean, viewModel: () ->  T): T{
+actual  fun <T: ViewModel<*>> rememberViewModel(isRetain: Boolean, viewModel: () ->  T): T{
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val host = LocalViewModelHost.current
     val vm = remember {
