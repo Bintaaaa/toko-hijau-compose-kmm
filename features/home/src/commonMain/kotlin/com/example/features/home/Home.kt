@@ -2,16 +2,19 @@ package com.example.features.home
 
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import com.bijan.apis.product.ProductRepository
 import com.bijan.apis.product.models.ProductResponseModel
 import com.bijan.libraries.core.LocalAppConfig
+import com.bijan.libraries.core.state.AsyncState
 import com.bijan.libraries.core.viewModel.rememberViewModel
 
 
@@ -26,7 +29,6 @@ fun Home(){
         HomeViewModel(productRepository)
     }
 
-    val products by homeViewModel.products.collectAsState()
     val homeState by homeViewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit){
@@ -41,9 +43,26 @@ fun Home(){
                 fontWeight = FontWeight.Bold
             )
         }
-        items(products){
-            ProductItem(it)
+        when(val productList = homeState.asyncProductList){
+            is AsyncState.Loading ->{
+                item {
+                    CircularProgressIndicator(
+                    )
+                }
+            }
+            is AsyncState.Failure -> {
+                item {
+                    Text(text = productList.throwable.message.orEmpty())
+                }
+            }
+            is AsyncState.Success -> {
+                items(productList.data){
+                    ProductItem(it)
+                }
+            }
+            else -> {}
         }
+
     }
 }
 
