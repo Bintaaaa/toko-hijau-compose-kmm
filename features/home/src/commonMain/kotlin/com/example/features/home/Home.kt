@@ -1,5 +1,7 @@
 package com.example.features.home
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
@@ -9,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.bijan.apis.product.ProductRepository
 import com.bijan.apis.product.models.ProductResponseModel
@@ -18,7 +21,7 @@ import com.bijan.libraries.core.viewModel.rememberViewModel
 
 
 @Composable
-fun Home(){
+fun Home(onItemClick: ( ProductResponseModel) -> Unit){
     val appConfig = LocalAppConfig.current
 
     val productRepository = remember {
@@ -60,7 +63,9 @@ fun Home(){
             }
             is AsyncState.Success -> {
                 items(productList.data){
-                    ProductItem(it)
+                    ProductItem(it){product ->
+                        onItemClick.invoke(product)
+                    }
                 }
             }
             else -> {}
@@ -71,8 +76,12 @@ fun Home(){
 
 
 @Composable
-fun ProductItem(products: ProductResponseModel){
-    Text(
-        text = products.name
-    )
+fun ProductItem(product: ProductResponseModel, onItemClick: (ProductResponseModel) -> Unit){
+   Column(modifier = Modifier.clickable {
+       onItemClick.invoke(product)
+   }) {
+       Text(
+           text = product.name
+       )
+   }
 }
