@@ -1,4 +1,4 @@
-package com.bijan.apis.product.models
+package com.bijan.apis.product.models.product
 
 
 import kotlinx.serialization.SerialName
