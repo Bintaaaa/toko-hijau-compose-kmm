@@ -23,6 +23,7 @@ ktor = "2.3.7"
 buildKonfig = "0.15.1"
 roomKtx = "2.6.1"
 preCompose = "1.5.9"
+image-loader = "1.7.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -52,6 +53,7 @@ ktor-client-serialization = { module = "io.ktor:ktor-serialization-kotlinx-json"
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
 preCompose = {module = "moe.tlaster:precompose", version.ref = "preCompose"}
+image-loader = { module = "io.github.qdsfdhvh:image-loader", version.ref = "image-loader" }
 
 
 [plugins]

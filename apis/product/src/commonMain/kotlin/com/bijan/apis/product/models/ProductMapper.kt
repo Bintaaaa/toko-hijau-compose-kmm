@@ -15,7 +15,8 @@ object ProductMapper {
         return ProductResponseModel(
             id = itemResponse?.id  ?: 0,
             name = itemResponse?.name ?: "--",
-            price = itemResponse?.price ?: 0.0
+            price = itemResponse?.price ?: 0.0,
+            image = itemResponse?.images ?: "",
         )
     }
 

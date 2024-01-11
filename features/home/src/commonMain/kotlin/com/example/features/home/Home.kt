@@ -1,11 +1,13 @@
 package com.example.features.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -41,6 +44,8 @@ import com.bijan.apis.product.models.product.ProductResponseModel
 import com.bijan.libraries.core.LocalAppConfig
 import com.bijan.libraries.core.state.AsyncState
 import com.bijan.libraries.core.viewModel.rememberViewModel
+import com.example.libraries.components.utils.toRupiah
+import com.seiko.imageloader.rememberImagePainter
 
 
 @Composable
@@ -64,17 +69,19 @@ fun Home(onItemClick: (ProductResponseModel) -> Unit) {
             HomeIntent.GetCategories
         )
     }
-
+//    LazyVerticalStaggeredGrid()
     Column(
         Modifier.verticalScroll(rememberScrollState())
     ) {
         CategoriesSection(homeState)
-        ProductsLowPriceSection(homeState)
+        ProductsLowPriceSection(homeState){ product ->
+            onItemClick.invoke(product)
+        }
     }
 }
 
 @Composable
-fun ProductsLowPriceSection(homeState: HomeState) {
+fun ProductsLowPriceSection(homeState: HomeState, onItemClick: (ProductResponseModel) -> Unit) {
     when (val productList = homeState.asyncProductsLowPrice) {
         is AsyncState.Loading -> {
             CircularProgressIndicator()
@@ -102,7 +109,7 @@ fun ProductsLowPriceSection(homeState: HomeState) {
                 ) {
                     items(products) { product ->
                         ProductItem(product) { product ->
-
+                            onItemClick.invoke(product)
                         }
                     }
                 }
@@ -116,6 +123,7 @@ fun ProductsLowPriceSection(homeState: HomeState) {
 
 @Composable
 fun ProductItem(product: ProductResponseModel, onItemClick: (ProductResponseModel) -> Unit) {
+    val imagePainter = rememberImagePainter(product.image)
     Row(
         modifier = Modifier.padding(bottom = 6.dp).background(
             color = Color.Black.copy(alpha = 0.3f),
@@ -125,8 +133,11 @@ fun ProductItem(product: ProductResponseModel, onItemClick: (ProductResponseMode
         }.padding(6.dp).fillMaxWidth().height(80.dp)
     ) {
         Box(Modifier.width(70.dp).clip(RoundedCornerShape(8.dp))) {
-            Text(
-                "Ini nanti image"
+            Image(
+                painter = imagePainter,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
             )
         }
         Column {
@@ -134,7 +145,7 @@ fun ProductItem(product: ProductResponseModel, onItemClick: (ProductResponseMode
                 text = product.name
             )
             Text(
-                text = product.price.toString()
+                text = product.price.toRupiah
             )
         }
     }
