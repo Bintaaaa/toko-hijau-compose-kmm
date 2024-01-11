@@ -40,15 +40,18 @@ fun App() {
                     scene(
                         route = "/home"
                     ) {
+
                         Home {
-                            navigator.navigate("/detail")
+                            navigator.navigate("/detail/${it.name}")
                         }
                     }
 
                     scene(
-                        route = "/detail"
+                        route = "/detail/{name}"
                     ) {
-                        ProductDetailScreen ("detail screen")
+                        val name = it.pathMap["name"].orEmpty()
+
+                        ProductDetailScreen (name)
                     }
 
                 }
