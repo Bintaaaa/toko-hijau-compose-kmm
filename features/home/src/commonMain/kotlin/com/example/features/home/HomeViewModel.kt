@@ -51,6 +51,6 @@ class HomeViewModel(private val productRepository: ProductRepository) : ViewMode
     }
 
     companion object{
-        private  const val  QUERY_LOW_PRICE = "?sort=low_price"
+        private  const val  QUERY_LOW_PRICE = "?sort=low_price&pageSize=30"
     }
 }
