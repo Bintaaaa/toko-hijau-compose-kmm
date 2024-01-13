@@ -1,5 +1,3 @@
-import org.jetbrains.compose.ExperimentalComposeLibrary
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
@@ -21,7 +19,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "home"
+            baseName = "components"
             isStatic = true
         }
     }
@@ -32,14 +30,14 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.ui)
-            @OptIn(ExperimentalComposeLibrary::class)
+            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
+            implementation(libs.ktor.client.serialization)
 
-            implementation(projects.apis.product)
-            implementation(projects.libraries.core)
-            implementation(projects.libraries.components)
+            api(libs.image.loader)
+
+
         }
-
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
@@ -52,13 +50,9 @@ kotlin {
 }
 
 android {
-    namespace = "com.example.features.home"
+    namespace = "com.example.libraries.components"
     compileSdk = 34
     defaultConfig {
         minSdk = 24
     }
-}
-dependencies {
-    implementation(libs.androidx.room.ktx)
-    implementation(libs.androidx.constraintlayout)
 }

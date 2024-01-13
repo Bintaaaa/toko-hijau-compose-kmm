@@ -8,8 +8,12 @@ class ProductDataSources(
     private val appConfig: AppConfig
 ) : NetworkDataSource(appConfig.baseUrl) {
 
-    suspend fun  getProductList(): HttpResponse{
-        val endPoint = "product"
+    suspend fun getCategories(): HttpResponse{
+        val endpoint = "product/category"
+        return getHttpResponse(endpoint)
+    }
+    suspend fun  getProductList(query: String): HttpResponse{
+        val endPoint = "product$query"
 
         return getHttpResponse(endPoint)
     }

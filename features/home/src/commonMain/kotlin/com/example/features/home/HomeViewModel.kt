@@ -9,13 +9,13 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(private val productRepository: ProductRepository) : ViewModel<HomeState, HomeIntent>(HomeState()) {
 
-     private fun getProducts() = viewModelScope.launch {
+     private fun getProductsLowPrice() = viewModelScope.launch {
         productRepository
-            .getProducts()
+            .getProducts(QUERY_LOW_PRICE)
             .stateIn(this)
             .collectLatest {
                 updateUiState {
-                    copy(asyncProductList = it)
+                    copy(asyncProductsLowPrice = it)
                 }
             }
     }
@@ -26,14 +26,31 @@ class HomeViewModel(private val productRepository: ProductRepository) : ViewMode
         }
     }
 
+    private  fun getCategories() = viewModelScope.launch {
+        productRepository.getCategories().stateIn(this).collectLatest {
+            updateUiState {
+                copy(
+                    asyncCategories = it
+                )
+            }
+        }
+    }
+
     override fun sendIntent(intent: Intent) {
         when (intent){
             is HomeIntent.SetName ->{
                 updateName(intent.name)
             }
-            is HomeIntent.GetProducts ->{
-                getProducts()
+            is HomeIntent.GetProductsLowPrice ->{
+                getProductsLowPrice()
+            }
+            is HomeIntent.GetCategories ->{
+                getCategories()
             }
         }
+    }
+
+    companion object{
+        private  const val  QUERY_LOW_PRICE = "?sort=low_price&pageSize=30"
     }
 }

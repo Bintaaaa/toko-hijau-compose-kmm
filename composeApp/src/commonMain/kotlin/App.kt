@@ -40,7 +40,6 @@ fun App() {
                     scene(
                         route = "/home"
                     ) {
-
                         Home {
                             navigator.navigate("/detail/${it.name}")
                         }
