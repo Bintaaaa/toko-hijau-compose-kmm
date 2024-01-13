@@ -1,4 +1,4 @@
-package com.bijan.apis.product
+package com.example.libraries.components
 
 class Greeting {
     private val platform: Platform = getPlatform()

@@ -51,7 +51,9 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
 
-        iosMain.dependencies {  }
+        iosMain.dependencies {
+            api(libs.ktor.client.darwin)
+        }
     }
 }
 
