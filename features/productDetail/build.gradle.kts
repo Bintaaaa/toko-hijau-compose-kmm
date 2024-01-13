@@ -37,6 +37,7 @@ kotlin {
 
             implementation(projects.apis.product)
             implementation(projects.libraries.core)
+            implementation(projects.libraries.components)
         }
 
         androidMain.dependencies {
