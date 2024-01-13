@@ -5,12 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -156,17 +156,16 @@ fun CategoriesSection(homeState: HomeState) {
     val stateGrid = rememberLazyGridState()
 
     LazyVerticalGrid(
-        modifier = Modifier.height(188.dp),
+        modifier = Modifier.height(100.dp).padding(6.dp),
         columns = GridCells.Fixed(4),
         state = stateGrid,
         userScrollEnabled = false,
-        contentPadding = PaddingValues(6.dp)
     ) {
         when (val asyncCategories = homeState.asyncCategories) {
             is AsyncState.Loading -> {
                 item {
                     Box(
-                        modifier = Modifier.height(170.dp),
+                        modifier = Modifier.height(30.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator()
@@ -196,15 +195,17 @@ fun CategoriesSection(homeState: HomeState) {
 
 @Composable
 fun CategoryItem(categoryItemResponse: CategoryItemResponse) {
-    Box(
-        modifier = Modifier.padding(6.dp).height(80.dp).fillMaxWidth()
-            .background(color = Color.Black.copy(alpha = 0.3f), shape = RoundedCornerShape(6.dp)).padding(6.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = categoryItemResponse.name,
-            fontSize = 12.sp,
-            textAlign = TextAlign.Center
-        )
+    Column {
+        Box(
+            modifier = Modifier.padding(6.dp).size(80.dp).fillMaxWidth()
+                .background(color = Color.Black.copy(alpha = 0.3f), shape = RoundedCornerShape(6.dp)).padding(6.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = categoryItemResponse.name,
+                fontSize = 12.sp,
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }

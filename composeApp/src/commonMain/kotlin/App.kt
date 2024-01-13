@@ -41,16 +41,16 @@ fun App() {
                         route = "/home"
                     ) {
                         Home {
-                            navigator.navigate("/detail/${it.name}")
+                            navigator.navigate("/detail/${it.id}")
                         }
                     }
 
                     scene(
-                        route = "/detail/{name}"
+                        route = "/detail/{id}"
                     ) {
-                        val name = it.pathMap["name"].orEmpty()
+                        val id = it.pathMap["id"].orEmpty()
 
-                        ProductDetailScreen (name)
+                        ProductDetailScreen (id = id)
                     }
 
                 }

@@ -17,4 +17,10 @@ class ProductDataSources(
 
         return getHttpResponse(endPoint)
     }
+
+    suspend fun getProductDetail(id: Int): HttpResponse{
+        val endpoint = "product/$id"
+
+        return getHttpResponse(endpoint)
+    }
 }
