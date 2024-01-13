@@ -4,6 +4,8 @@ import androidx.compose.runtime.compositionLocalOf
 import com.bijan.apis.product.models.ProductMapper
 import com.bijan.apis.product.models.category.CategoriesResponse
 import com.bijan.apis.product.models.category.CategoryItemResponse
+import com.bijan.apis.product.models.product.ProductDetailEntity
+import com.bijan.apis.product.models.product.ProductDetailResponseModel
 import com.bijan.apis.product.models.product.ProductResponseModel
 import com.bijan.apis.product.models.product.ProductsResponseModel
 import com.bijan.libraries.core.AppConfig
@@ -38,9 +40,19 @@ class ProductRepository(private val appConfig: AppConfig) : RepositoryReducer() 
                 val throwable = Throwable("Category is Empty")
                 AsyncState.Failure(throwable)
             }else{
-                val data = ProductMapper.mapResponseCategories(response).take(7)
+                val data = ProductMapper.mapResponseCategories(response).take(3)
                 AsyncState.Success(data)
             }
+        }
+    }
+
+    suspend fun getProductDetail(id: Int): Flow<AsyncState<ProductDetailEntity>>{
+        return  suspend {
+            dataSources.getProductDetail(id = id)
+        }.reduce<ProductDetailResponseModel, ProductDetailEntity > { response ->
+            val responseData = response.data
+            val data = ProductMapper.mapResponseProductDetail(responseData!!)
+            AsyncState.Success(data)
         }
     }
 }
