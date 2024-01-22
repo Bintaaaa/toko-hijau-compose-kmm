@@ -38,11 +38,16 @@ kotlin {
             implementation(projects.apis.product)
             implementation(projects.libraries.core)
             implementation(projects.libraries.components)
+
+            implementation(libs.paging.cashapp.common)
+            implementation(libs.paging.cashapp.compose)
         }
 
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.paging.androidx.runtime)
+            implementation(libs.paging.androidx.compose)
         }
 
         commonTest.dependencies {

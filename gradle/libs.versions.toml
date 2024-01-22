@@ -24,6 +24,8 @@ buildKonfig = "0.15.1"
 roomKtx = "2.6.1"
 preCompose = "1.5.9"
 image-loader = "1.7.1"
+paging-androidx = "3.3.0-alpha02"
+paging-cashapp = "3.3.0-alpha02-0.4.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -55,6 +57,10 @@ androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = 
 preCompose = {module = "moe.tlaster:precompose", version.ref = "preCompose"}
 image-loader = { module = "io.github.qdsfdhvh:image-loader", version.ref = "image-loader" }
 
+paging-androidx-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging-androidx" }
+paging-androidx-compose = { module = "androidx.paging:paging-compose", version.ref = "paging-androidx" }
+paging-cashapp-common = { module = "app.cash.paging:paging-common", version.ref = "paging-cashapp" }
+paging-cashapp-compose = { module = "app.cash.paging:paging-compose-common", version.ref = "paging-cashapp" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

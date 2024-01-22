@@ -11,7 +11,7 @@ data class ProductsResponseModel(
     @SerialName("message")
     val message: String,
     @SerialName("data")
-    val `data`: List<ProductItemResponseModel>
+    val `data`: List<ProductItemResponseModel?>?
 ) {
     @Serializable
     data class ProductItemResponseModel(
