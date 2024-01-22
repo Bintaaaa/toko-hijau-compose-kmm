@@ -88,7 +88,7 @@ fun ProductsLowPriceSection(
     onItemClick: (ProductResponseModel) -> Unit
 ) {
     Column(
-        modifier = Modifier.padding(12.dp).heightIn(min = 300.dp, max = 800.dp),
+        modifier = Modifier.padding(12.dp).heightIn(min = 300.dp, max = 1200.dp),
     ) {
         LazyColumn {
             items(pagingProduct.itemCount) { index ->
