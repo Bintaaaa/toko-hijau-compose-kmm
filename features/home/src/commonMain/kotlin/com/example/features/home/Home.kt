@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -94,7 +95,7 @@ fun ProductsLowPriceSection(homeState: HomeState, onItemClick: (ProductResponseM
         is AsyncState.Success -> {
             val products = productList.data
             Column(
-                modifier = Modifier.height((products.size * 100.5).dp),
+                modifier = Modifier.heightIn(min = 300.dp, max = 10000.dp),
             ) {
                 Box(modifier = Modifier.padding(12.dp)){
                     Text(
@@ -130,7 +131,7 @@ fun ProductItem(product: ProductResponseModel, onItemClick: (ProductResponseMode
             shape = RoundedCornerShape(12.dp)
         ).clickable {
             onItemClick.invoke(product)
-        }.padding(6.dp).fillMaxWidth().height(80.dp)
+        }.padding(6.dp).fillMaxWidth().height(100.dp)
     ) {
         Box(Modifier.width(70.dp).clip(RoundedCornerShape(8.dp))) {
             Image(
@@ -209,3 +210,4 @@ fun CategoryItem(categoryItemResponse: CategoryItemResponse) {
         }
     }
 }
+
