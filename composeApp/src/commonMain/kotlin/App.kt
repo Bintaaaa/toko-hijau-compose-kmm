@@ -9,6 +9,7 @@ import com.bijan.libraries.core.LocalAppConfig
 import com.bijan.libraries.core.viewModel.LocalViewModelHost
 import com.bijan.libraries.core.viewModel.ViewModelHost
 import com.example.features.home.Home
+import com.example.libraries.components.utils.LocalImageResouceUtils
 import com.example.productdetail.ProductDetailScreen
 import moe.tlaster.precompose.PreComposeApp
 import moe.tlaster.precompose.navigation.NavHost
@@ -22,12 +23,13 @@ fun App() {
     val viewModelHost = remember { ViewModelHost() }
     val appConfigProvider = remember { AppConfigProvider() }
     val productRepository = remember { ProductRepository(appConfigProvider) }
-
+    val imageResourcesProvider = remember { ImageResourcesProvider() }
 
     PreComposeApp{
         CompositionLocalProvider(
             LocalViewModelHost provides  viewModelHost,
             LocalAppConfig provides appConfigProvider,
+            LocalImageResouceUtils provides imageResourcesProvider,
             LocalProductRepository provides productRepository,
         ){
             MaterialTheme {
@@ -50,7 +52,9 @@ fun App() {
                     ) {
                         val id = it.pathMap["id"].orEmpty()
 
-                        ProductDetailScreen (id = id)
+                        ProductDetailScreen (id = id, ){
+                            navigator.popBackStack()
+                        }
                     }
 
                 }

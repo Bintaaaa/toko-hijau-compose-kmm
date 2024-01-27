@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,12 +31,13 @@ import com.bijan.apis.product.models.product.UserReview
 import com.bijan.libraries.core.LocalAppConfig
 import com.bijan.libraries.core.state.AsyncState
 import com.bijan.libraries.core.viewModel.rememberViewModel
+import com.example.libraries.components.components.TopBarComponent
 import com.example.libraries.components.utils.toRupiah
 import com.seiko.imageloader.rememberImagePainter
 
 
 @Composable
-fun ProductDetailScreen(id: String) {
+fun ProductDetailScreen(id: String, actionBack: () -> Unit) {
     val appConfig = LocalAppConfig.current
     val productRepository = remember {
         ProductRepository(appConfig)
@@ -53,15 +55,17 @@ fun ProductDetailScreen(id: String) {
         )
     }
 
-    LazyColumn {
-        item {
-            CarouselImagesProductDetailSection(productDetailState)
-        }
-        item {
-            CommonInformationProductDetailSection(productDetailState)
-        }
-        item {
-            ReviewProductDetailSection(productDetailState)
+    Scaffold(topBar = { TopBarComponent(title = "Produk Detail", onBack = actionBack) }) {
+        LazyColumn {
+            item {
+                CarouselImagesProductDetailSection(productDetailState)
+            }
+            item {
+                CommonInformationProductDetailSection(productDetailState)
+            }
+            item {
+                ReviewProductDetailSection(productDetailState)
+            }
         }
     }
 }

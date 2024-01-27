@@ -42,6 +42,7 @@ kotlin {
             implementation(projects.apis.product)
             implementation(projects.features.home)
             implementation(projects.features.productDetail)
+            implementation(projects.libraries.components)
             implementation(projects.libraries.core)
             implementation(libs.preCompose)
 
