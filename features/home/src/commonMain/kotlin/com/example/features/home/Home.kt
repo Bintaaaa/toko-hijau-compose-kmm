@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -28,18 +27,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bijan.apis.product.ProductRepository
+import androidx.paging.LoadState
+import app.cash.paging.compose.LazyPagingItems
+import app.cash.paging.compose.collectAsLazyPagingItems
+import com.bijan.apis.product.LocalProductRepository
 import com.bijan.apis.product.models.category.CategoryItemResponse
 import com.bijan.apis.product.models.product.ProductResponseModel
 import com.bijan.libraries.core.LocalAppConfig
@@ -52,15 +51,15 @@ import com.seiko.imageloader.rememberImagePainter
 @Composable
 fun Home(onItemClick: (ProductResponseModel) -> Unit) {
     val appConfig = LocalAppConfig.current
+    val productRepository = LocalProductRepository.current
 
-    val productRepository = remember {
-        ProductRepository(appConfig)
-    }
     val homeViewModel = rememberViewModel {
-        HomeViewModel(productRepository)
+        HomeViewModel(productRepository, appConfig)
     }
 
     val homeState by homeViewModel.uiState.collectAsState()
+
+    val pagingProduct = homeState.pagingData.collectAsLazyPagingItems()
 
     LaunchedEffect(Unit) {
         homeViewModel.sendIntent(
@@ -70,54 +69,64 @@ fun Home(onItemClick: (ProductResponseModel) -> Unit) {
             HomeIntent.GetCategories
         )
     }
+
 //    LazyVerticalStaggeredGrid()
     Column(
         Modifier.verticalScroll(rememberScrollState())
     ) {
         CategoriesSection(homeState)
-        ProductsLowPriceSection(homeState){ product ->
+        ProductsLowPriceSection(homeState, pagingProduct) { product ->
             onItemClick.invoke(product)
         }
     }
 }
 
 @Composable
-fun ProductsLowPriceSection(homeState: HomeState, onItemClick: (ProductResponseModel) -> Unit) {
-    when (val productList = homeState.asyncProductsLowPrice) {
-        is AsyncState.Loading -> {
-            CircularProgressIndicator()
-        }
-
-        is AsyncState.Failure -> {
-            Text(text = productList.throwable.message.orEmpty())
-        }
-
-        is AsyncState.Success -> {
-            val products = productList.data
-            Column(
-                modifier = Modifier.heightIn(min = 300.dp, max = 10000.dp),
-            ) {
-                Box(modifier = Modifier.padding(12.dp)){
-                    Text(
-                        "Produk Dengan Harga Rendah", style = TextStyle(
-                            fontSize = 16.sp, fontWeight = FontWeight.Bold
-                        )
-                    )
+fun ProductsLowPriceSection(
+    homeState: HomeState,
+    pagingProduct: LazyPagingItems<ProductResponseModel>,
+    onItemClick: (ProductResponseModel) -> Unit
+) {
+    Column(
+        modifier = Modifier.padding(12.dp).heightIn(min = 300.dp, max = 1200.dp),
+    ) {
+        LazyColumn {
+            items(pagingProduct.itemCount) { index ->
+                val item = pagingProduct[index]
+                if (item != null) {
+                    ProductItem(item) { product ->
+                        onItemClick.invoke(product)
+                    }
                 }
-                LazyColumn(
-                    Modifier.padding(12.dp),
-                    userScrollEnabled = false
-                ) {
-                    items(products) { product ->
-                        ProductItem(product) { product ->
-                            onItemClick.invoke(product)
-                        }
+            }
+            when {
+                pagingProduct.loadState.refresh is LoadState.Loading -> {
+                    item {
+                        CircularProgressIndicator()
+                    }
+                }
+
+                pagingProduct.loadState.append is LoadState.Loading -> {
+                    item {
+                        CircularProgressIndicator()
+                    }
+                }
+
+                pagingProduct.loadState.refresh is LoadState.Error -> {
+                    item {
+                        val throwable = (pagingProduct.loadState.refresh as LoadState.Error).error
+                        Text(throwable.message.orEmpty())
+                    }
+                }
+
+                pagingProduct.loadState.append is LoadState.Error -> {
+                    item {
+                        val throwable = (pagingProduct.loadState.append as LoadState.Error).error
+                        Text(throwable.message.orEmpty())
                     }
                 }
             }
         }
-
-        else -> {}
     }
 }
 

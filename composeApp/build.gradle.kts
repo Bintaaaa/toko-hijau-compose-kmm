@@ -44,6 +44,7 @@ kotlin {
             implementation(projects.features.productDetail)
             implementation(projects.libraries.core)
             implementation(libs.preCompose)
+
         }
 
         androidMain.dependencies {

@@ -14,7 +14,7 @@ object ProductMapper {
         return productListResponse?.data?.map { mapItemResponseToItemList(it) }.orEmpty()
     }
 
-    private fun mapItemResponseToItemList(itemResponse: ProductItemResponseModel?): ProductResponseModel {
+fun mapItemResponseToItemList(itemResponse: ProductItemResponseModel?): ProductResponseModel {
         return ProductResponseModel(
             id = itemResponse?.id ?: 0,
             name = itemResponse?.name ?: "--",
