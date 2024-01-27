@@ -8,16 +8,13 @@ import com.bijan.apis.product.ProductRepository
 import com.bijan.libraries.core.LocalAppConfig
 import com.bijan.libraries.core.viewModel.LocalViewModelHost
 import com.bijan.libraries.core.viewModel.ViewModelHost
-import com.example.features.home.Home
 import com.example.libraries.components.utils.LocalImageResouceUtils
 import com.example.productdetail.ProductDetailScreen
 import moe.tlaster.precompose.PreComposeApp
 import moe.tlaster.precompose.navigation.NavHost
 import moe.tlaster.precompose.navigation.rememberNavigator
 import moe.tlaster.precompose.navigation.transition.NavTransition
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun App() {
     val viewModelHost = remember { ViewModelHost() }
@@ -25,38 +22,41 @@ fun App() {
     val productRepository = remember { ProductRepository(appConfigProvider) }
     val imageResourcesProvider = remember { ImageResourcesProvider() }
 
+    val bottomScreenProvider = remember { BottomScreenNavigator() }
+
     PreComposeApp{
         CompositionLocalProvider(
             LocalViewModelHost provides  viewModelHost,
             LocalAppConfig provides appConfigProvider,
             LocalImageResouceUtils provides imageResourcesProvider,
             LocalProductRepository provides productRepository,
+            LocalBottomScreen provides  bottomScreenProvider,
         ){
             MaterialTheme {
-                val navigator = rememberNavigator()
-                NavHost(
-                    navigator = navigator,
-                    navTransition = NavTransition(),
-                    initialRoute = "/home"
-                ) {
-                    scene(
-                        route = "/home"
+                PreComposeApp {
+                    val navigator = rememberNavigator()
+                    NavHost(
+                        navigator = navigator,
+                        navTransition = NavTransition(),
+                        initialRoute = "/home"
                     ) {
-                        Home {
-                            navigator.navigate("/detail/${it.id}")
+                        scene(
+                            route = "/home"
+                        ) {
+                           BottomScreen()
                         }
-                    }
 
-                    scene(
-                        route = "/detail/{id}"
-                    ) {
-                        val id = it.pathMap["id"].orEmpty()
+                        scene(
+                            route = "/detail/{id}"
+                        ) {
+                            val id = it.pathMap["id"].orEmpty()
 
-                        ProductDetailScreen (id = id, ){
-                            navigator.popBackStack()
+                            ProductDetailScreen (id = id ){
+                                navigator.popBackStack()
+                            }
                         }
-                    }
 
+                    }
                 }
             }
         }

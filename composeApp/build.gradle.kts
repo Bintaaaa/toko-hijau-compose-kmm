@@ -39,6 +39,7 @@ kotlin {
             implementation(compose.ui)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
+            implementation(projects.features.favorite)
             implementation(projects.apis.product)
             implementation(projects.features.home)
             implementation(projects.features.productDetail)
