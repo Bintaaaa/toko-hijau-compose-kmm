@@ -13,6 +13,9 @@ interface ImageResourcesUtils {
 
     @Composable
     fun StarBorder(): Painter
+
+    @Composable
+    fun logos(): Painter
 }
 
 val LocalImageResouceUtils = compositionLocalOf <ImageResourcesUtils>{  error("Image resource not provided")  }

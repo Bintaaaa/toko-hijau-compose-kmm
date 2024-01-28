@@ -11,5 +11,6 @@ data class HomeState(
     val name: String = "",
     val asyncProductsLowPrice: AsyncState<List<ProductResponseModel>> = AsyncState.Default,
     val asyncCategories: AsyncState<List<CategoryItemResponse>> = AsyncState.Default,
-    val pagingData: Flow<PagingData<ProductResponseModel>> = emptyFlow()
+    val pagingData: Flow<PagingData<ProductResponseModel>> = emptyFlow(),
+    val splash :  AsyncState<Boolean> =  AsyncState.Default
 )

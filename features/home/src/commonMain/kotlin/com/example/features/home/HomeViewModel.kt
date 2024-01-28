@@ -5,14 +5,29 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.bijan.apis.product.ProductRepository
 import com.bijan.libraries.core.AppConfig
+import com.bijan.libraries.core.state.AsyncState
 import com.bijan.libraries.core.state.Intent
 import com.bijan.libraries.core.viewModel.ViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val productRepository: ProductRepository,private val appConfig: AppConfig) :
     ViewModel<HomeState, HomeIntent>(HomeState()) {
+
+        private fun splash(){
+            viewModelScope.launch {
+                delay(2000).apply {
+                    updateUiState {
+                        copy(
+                            splash = AsyncState.Success(true)
+                        )
+                    }
+                }
+
+            }
+        }
 
     private fun getProductsLowPrice() = viewModelScope.launch {
 
@@ -59,6 +74,9 @@ class HomeViewModel(private val productRepository: ProductRepository,private val
 
             is HomeIntent.GetCategories -> {
                 getCategories()
+            }
+            is HomeIntent.Splash ->{
+                splash()
             }
         }
     }

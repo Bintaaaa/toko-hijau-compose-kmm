@@ -8,6 +8,7 @@ import com.bijan.apis.product.ProductRepository
 import com.bijan.libraries.core.LocalAppConfig
 import com.bijan.libraries.core.viewModel.LocalViewModelHost
 import com.bijan.libraries.core.viewModel.ViewModelHost
+import com.example.features.home.SplashScreen
 import com.example.libraries.components.utils.LocalImageResouceUtils
 import com.example.productdetail.ProductDetailScreen
 import moe.tlaster.precompose.PreComposeApp
@@ -38,8 +39,17 @@ fun App() {
                     NavHost(
                         navigator = navigator,
                         navTransition = NavTransition(),
-                        initialRoute = "/home"
+                        initialRoute = "/splash"
                     ) {
+
+                        scene(
+                            route = "/splash"
+                        ) {
+                            SplashScreen {
+                                navigator.navigate("/home")
+                            }
+                        }
+
                         scene(
                             route = "/home"
                         ) {
