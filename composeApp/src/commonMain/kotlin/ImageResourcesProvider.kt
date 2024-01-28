@@ -21,4 +21,9 @@ class ImageResourcesProvider : ImageResourcesUtils {
     override fun StarBorder(): Painter {
         return painterResource("round_star_border_24.xml")
     }
+
+    @Composable
+    override fun logos(): Painter {
+        return painterResource("toko_hijau_logo.png")
+    }
 }

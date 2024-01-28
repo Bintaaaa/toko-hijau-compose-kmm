@@ -7,4 +7,5 @@ sealed class HomeIntent : Intent {
     data object GetProductsLowPrice : HomeIntent()
 
     data object GetCategories: HomeIntent()
+    data object Splash: HomeIntent()
 }
