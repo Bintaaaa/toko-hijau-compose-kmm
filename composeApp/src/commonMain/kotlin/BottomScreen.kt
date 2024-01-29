@@ -1,3 +1,4 @@
+
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.pager.HorizontalPager
@@ -17,7 +18,7 @@ import androidx.compose.runtime.setValue
 import com.bintaaaa.features.favorite.FavoriteScreen
 import com.example.features.home.Home
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.navigation.rememberNavigator
+import moe.tlaster.precompose.navigation.Navigator
 
 
 enum class ItemBottomScreen {
@@ -58,7 +59,7 @@ fun RowScope.BottomScreenItem(item: ItemBottomScreen, paggerState: PagerState) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun BottomScreen() {
+fun BottomScreen(navigator: Navigator) {
     val paggerState = rememberPagerState { 2 }
 
     val tabNavigator = LocalBottomScreen.current
@@ -72,7 +73,6 @@ fun BottomScreen() {
         }
 
     }
-    val navigator = rememberNavigator()
 
     Scaffold(bottomBar = {
         BottomNavigation {
@@ -93,7 +93,9 @@ fun BottomScreen() {
                 }
 
                 1 -> {
-                    FavoriteScreen()
+                    FavoriteScreen {
+                        navigator.navigate("/detail/${it.id}")
+                    }
                 }
             }
         }
