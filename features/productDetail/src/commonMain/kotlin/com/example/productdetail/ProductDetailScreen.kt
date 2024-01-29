@@ -13,6 +13,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -32,6 +35,7 @@ import com.bijan.libraries.core.LocalAppConfig
 import com.bijan.libraries.core.state.AsyncState
 import com.bijan.libraries.core.viewModel.rememberViewModel
 import com.example.libraries.components.components.TopBarComponent
+import com.example.libraries.components.utils.LocalImageResouceUtils
 import com.example.libraries.components.utils.toRupiah
 import com.seiko.imageloader.rememberImagePainter
 
@@ -49,6 +53,14 @@ fun ProductDetailScreen(id: String, actionBack: () -> Unit) {
 
     val productDetailState by productDetailViewModel.uiState.collectAsState()
 
+    val imageResources = LocalImageResouceUtils.current
+
+    val imageFavorite = if (productDetailState.isFavorite) {
+        imageResources.StarFill()
+    } else {
+        imageResources.StarBorder()
+    }
+
     LaunchedEffect(Unit) {
         productDetailViewModel.sendIntent(
             ProductDetailIntent.GetProductDetail(id.toInt())
@@ -61,7 +73,11 @@ fun ProductDetailScreen(id: String, actionBack: () -> Unit) {
                 CarouselImagesProductDetailSection(productDetailState)
             }
             item {
-                CommonInformationProductDetailSection(productDetailState)
+                CommonInformationProductDetailSection(
+                    productDetailState,
+                    imageFavorite = imageFavorite,
+                    viewModel = productDetailViewModel
+                )
             }
             item {
                 ReviewProductDetailSection(productDetailState)
@@ -99,7 +115,11 @@ fun CarouselImagesProductDetailSection(productDetailState: ProductDetailState) {
 }
 
 @Composable
-fun CommonInformationProductDetailSection(productDetailState: ProductDetailState) {
+fun CommonInformationProductDetailSection(
+    productDetailState: ProductDetailState,
+    imageFavorite: Painter,
+    viewModel: ProductDetailViewModel
+) {
     when (val dataCommon = productDetailState.productDetail) {
         is AsyncState.Loading -> {
             CircularProgressIndicator()
@@ -124,12 +144,25 @@ fun CommonInformationProductDetailSection(productDetailState: ProductDetailState
                         modifier = Modifier.padding(6.dp)
                     )
                 }
-                Text(
-                    commonInfo.title,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(6.dp)
-                )
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(
+                        commonInfo.title,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(6.dp)
+                    )
+                    IconButton(
+                        onClick = {
+                            viewModel.sendIntent(ProductDetailIntent.ToggleFavorite(commonInfo))
+                        }
+                    ) {
+                        Icon(
+                            painter = imageFavorite,
+                            contentDescription = null
+                        )
+                    }
+
+                }
                 Text(
                     commonInfo.description,
                     fontSize = 16.sp,

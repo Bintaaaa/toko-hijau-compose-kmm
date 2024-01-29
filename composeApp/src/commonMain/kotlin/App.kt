@@ -53,7 +53,7 @@ fun App() {
                         scene(
                             route = "/home"
                         ) {
-                           BottomScreen()
+                           BottomScreen(navigator)
                         }
 
                         scene(
