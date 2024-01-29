@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class ProductDetailViewModel(val productRespository: ProductRepository): ViewModel<ProductDetailState, ProductDetailIntent>(
+class ProductDetailViewModel(private val productRespository: ProductRepository): ViewModel<ProductDetailState, ProductDetailIntent>(
     ProductDetailState()
 ) {
 
@@ -19,10 +19,23 @@ class ProductDetailViewModel(val productRespository: ProductRepository): ViewMod
         }
     }
 
+    private  fun getProductIsFavoriteById(productId: Int) = viewModelScope.launch {
+        productRespository.isProductFavorite(productId).stateIn(this).collectLatest {
+            updateUiState {
+                copy(
+                    isFavorite = it
+                )
+            }
+        }
+
+    }
+
     override fun sendIntent(intent: Intent) {
         when(intent){
             is ProductDetailIntent.GetProductDetail ->{
-                getProductDetail(intent.id)
+                val id = intent.id
+                getProductDetail(id)
+                getProductIsFavoriteById(id)
             }
         }
     }

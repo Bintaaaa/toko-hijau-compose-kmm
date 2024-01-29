@@ -72,13 +72,14 @@ fun BottomScreen() {
         }
 
     }
+    val navigator = rememberNavigator()
+
     Scaffold(bottomBar = {
         BottomNavigation {
             BottomScreenItem(ItemBottomScreen.HOME, paggerState)
             BottomScreenItem(ItemBottomScreen.FAVORITE, paggerState)
         }
     }) {
-        val navigator = rememberNavigator()
 
         HorizontalPager(
             state = paggerState,
