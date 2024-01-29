@@ -10,14 +10,17 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlin.reflect.KClass
 
-abstract class LocalDataSources(vararg kClass: KClass<out RealmObject>) {
+abstract class LocalDataSources(
+    vararg kClass: KClass<out RealmObject>
+) {
+
     private val config = RealmConfiguration.create(
         schema = kClass.toList().toSet()
     )
     private val realm = Realm.open(config)
 
-    suspend fun <T: RealmObject> insertObject(data: T){
-        withContext(Dispatchers.IO){
+    suspend fun <T: RealmObject> insertObject(data: T) {
+        withContext(Dispatchers.IO) {
             realm.writeBlocking {
                 copyToRealm(data)
             }
@@ -62,5 +65,4 @@ abstract class LocalDataSources(vararg kClass: KClass<out RealmObject>) {
                 .lastOrNull()
         }
     }
-
 }

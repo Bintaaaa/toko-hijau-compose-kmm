@@ -13,6 +13,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -53,9 +55,9 @@ fun ProductDetailScreen(id: String, actionBack: () -> Unit) {
 
     val imageResources = LocalImageResouceUtils.current
 
-    val imageFavorite = if(productDetailState.isFavorite) {
+    val imageFavorite = if (productDetailState.isFavorite) {
         imageResources.StarFill()
-    }else{
+    } else {
         imageResources.StarBorder()
     }
 
@@ -71,7 +73,11 @@ fun ProductDetailScreen(id: String, actionBack: () -> Unit) {
                 CarouselImagesProductDetailSection(productDetailState)
             }
             item {
-                CommonInformationProductDetailSection(productDetailState, imageFavorite = imageFavorite)
+                CommonInformationProductDetailSection(
+                    productDetailState,
+                    imageFavorite = imageFavorite,
+                    viewModel = productDetailViewModel
+                )
             }
             item {
                 ReviewProductDetailSection(productDetailState)
@@ -109,7 +115,11 @@ fun CarouselImagesProductDetailSection(productDetailState: ProductDetailState) {
 }
 
 @Composable
-fun CommonInformationProductDetailSection(productDetailState: ProductDetailState, imageFavorite: Painter) {
+fun CommonInformationProductDetailSection(
+    productDetailState: ProductDetailState,
+    imageFavorite: Painter,
+    viewModel: ProductDetailViewModel
+) {
     when (val dataCommon = productDetailState.productDetail) {
         is AsyncState.Loading -> {
             CircularProgressIndicator()
@@ -134,20 +144,23 @@ fun CommonInformationProductDetailSection(productDetailState: ProductDetailState
                         modifier = Modifier.padding(6.dp)
                     )
                 }
-                Row {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(
                         commonInfo.title,
-                        fontSize = 24.sp,
+                        fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(6.dp)
                     )
-                    Image(
-                        painter = imageFavorite,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxWidth()
-                            .height(200.dp)
-                    )
+                    IconButton(
+                        onClick = {
+                            viewModel.sendIntent(ProductDetailIntent.ToggleFavorite(commonInfo))
+                        }
+                    ) {
+                        Icon(
+                            painter = imageFavorite,
+                            contentDescription = null
+                        )
+                    }
 
                 }
                 Text(

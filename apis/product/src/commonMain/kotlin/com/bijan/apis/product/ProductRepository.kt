@@ -61,7 +61,7 @@ class ProductRepository(private val appConfig: AppConfig) : RepositoryReducer() 
         return favoriteLocalDataSource.getProductFavorites()
     }
 
-    suspend fun isProductFavorite(productId: Int): Flow<Boolean>{
+    suspend fun isProductFavorite(productId: Int): Flow<Boolean> {
         return favoriteLocalDataSource.getProductIsFavorite(productId)
     }
 
