@@ -1,5 +1,6 @@
 package com.bintaaaa.apis.authentication
 
+import androidx.compose.runtime.compositionLocalOf
 import com.bijan.libraries.core.AppConfig
 import com.bijan.libraries.core.local.AuthenticationLocalDatasource
 import com.bijan.libraries.core.repository.RepositoryReducer
@@ -31,3 +32,5 @@ class AuthenticationRepository(
         }
     }
 }
+
+val LocalAuthenticationRepository = compositionLocalOf <AuthenticationRepository>{ error("auth repo not provided!") }

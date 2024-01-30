@@ -14,6 +14,6 @@ class AuthenticationLocalDatasource(
     }
 }
 
-val LocalAuthenticationLocalDatasource= compositionLocalOf<AuthenticationLocalDatasource> {
+val LocalAuthenticationLocalDatasource = compositionLocalOf<AuthenticationLocalDatasource> {
     error("Local token data sources not provided")
 }

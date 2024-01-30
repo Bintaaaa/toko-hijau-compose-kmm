@@ -6,8 +6,15 @@ import androidx.compose.runtime.remember
 import com.bijan.apis.product.LocalProductRepository
 import com.bijan.apis.product.ProductRepository
 import com.bijan.libraries.core.LocalAppConfig
+import com.bijan.libraries.core.local.AuthenticationLocalDatasource
+import com.bijan.libraries.core.local.LocalAuthenticationLocalDatasource
+import com.bijan.libraries.core.local.LocalValueDataSources
+import com.bijan.libraries.core.local.ValueDataSources
 import com.bijan.libraries.core.viewModel.LocalViewModelHost
 import com.bijan.libraries.core.viewModel.ViewModelHost
+import com.bintaaaa.apis.authentication.AuthenticationRepository
+import com.bintaaaa.apis.authentication.LocalAuthenticationRepository
+import com.bintaaaa.features.authentication.LoginScreen
 import com.example.features.home.SplashScreen
 import com.example.libraries.components.utils.LocalImageResouceUtils
 import com.example.productdetail.ProductDetailScreen
@@ -18,12 +25,15 @@ import moe.tlaster.precompose.navigation.transition.NavTransition
 
 @Composable
 fun App() {
+
     val viewModelHost = remember { ViewModelHost() }
     val appConfigProvider = remember { AppConfigProvider() }
     val productRepository = remember { ProductRepository(appConfigProvider) }
     val imageResourcesProvider = remember { ImageResourcesProvider() }
-
     val bottomScreenProvider = remember { BottomScreenNavigator() }
+    val valueDataSource = remember { ValueDataSources() }
+    val authenticationLocalDatasource = remember { AuthenticationLocalDatasource(valueDataSource) }
+    val authenticationRepository = remember { AuthenticationRepository(appConfigProvider,authenticationLocalDatasource) }
 
     PreComposeApp{
         CompositionLocalProvider(
@@ -32,6 +42,9 @@ fun App() {
             LocalImageResouceUtils provides imageResourcesProvider,
             LocalProductRepository provides productRepository,
             LocalBottomScreen provides  bottomScreenProvider,
+            LocalAuthenticationLocalDatasource provides authenticationLocalDatasource,
+            LocalAuthenticationRepository provides authenticationRepository,
+            LocalValueDataSources provides valueDataSource,
         ){
             MaterialTheme {
                 PreComposeApp {
@@ -46,6 +59,14 @@ fun App() {
                             route = "/splash"
                         ) {
                             SplashScreen {
+                                navigator.navigate("/login")
+                            }
+                        }
+
+                        scene(
+                            route = "/login"
+                        ) {
+                            LoginScreen{
                                 navigator.navigate("/home")
                             }
                         }
