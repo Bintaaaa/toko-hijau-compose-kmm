@@ -15,17 +15,18 @@ kotlin {
             }
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "favorite"
+            baseName = "cart"
             isStatic = true
         }
     }
+
 
 
     sourceSets {
@@ -59,12 +60,13 @@ kotlin {
 }
 
 android {
-    namespace = "com.bintaaaa.features.favorite"
+    namespace = "com.bintaaaa.features.cart"
     compileSdk = 34
     defaultConfig {
         minSdk = 24
     }
-}
-dependencies {
-    implementation(libs.androidx.material3)
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
 }

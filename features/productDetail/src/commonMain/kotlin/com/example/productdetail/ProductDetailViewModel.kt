@@ -1,6 +1,6 @@
 package com.example.productdetail
 
-import com.bijan.apis.product.ProductRepository
+import com.bijan.apis.product.repository.ProductRepository
 import com.bijan.apis.product.models.product.ProductDetailEntity
 import com.bijan.libraries.core.state.Intent
 import com.bijan.libraries.core.viewModel.ViewModel

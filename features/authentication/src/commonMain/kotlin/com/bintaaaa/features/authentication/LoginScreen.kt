@@ -1,5 +1,6 @@
 package com.bintaaaa.features.authentication
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,7 +25,7 @@ import com.example.libraries.components.components.TopBarComponent
 import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen(onRedirect: () -> Unit) {
+fun LoginScreen(onRedirect: () -> Unit, guestMode: () -> Unit) {
 
     val authenticationRepository = LocalAuthenticationRepository.current
     val viewModel = rememberViewModel { AuthenticationViewModel(authenticationRepository) }
@@ -71,6 +72,10 @@ fun LoginScreen(onRedirect: () -> Unit) {
                     viewModel.sendIntent(AuthenticationIntent.UpdatePassword(password))
                 }
             )
+
+            Text(modifier = Modifier.clickable {
+                guestMode.invoke()
+            }, text = "Masuk Sebagai Tamu")
 
             ButtonSubmit(viewModel, loginState)
         }

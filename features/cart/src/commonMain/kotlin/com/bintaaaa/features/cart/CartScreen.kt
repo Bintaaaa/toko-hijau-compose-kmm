@@ -1,8 +1,7 @@
-package com.bintaaaa.features.favorite
+package com.bintaaaa.features.cart
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +13,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -26,56 +27,76 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import com.bijan.apis.product.models.cart.CartItemEntity
 import com.bijan.apis.product.repository.LocalProductRepository
-import com.bijan.apis.product.models.product.ProductResponseEntity
+import com.bijan.libraries.core.repository.UnauthorizedException
+import com.bijan.libraries.core.state.AsyncState
 import com.bijan.libraries.core.viewModel.rememberViewModel
 import com.example.libraries.components.components.TopBarComponent
 import com.example.libraries.components.utils.toRupiah
 import com.seiko.imageloader.rememberImagePainter
 
-
 @Composable
-fun FavoriteScreen(onItemClick: (ProductResponseEntity) -> Unit){
+fun CartScreen(loginAction: () -> Unit, onCart: () -> Unit) {
     val productRepository = LocalProductRepository.current
-    val viewModel = rememberViewModel { ProductFavoritesViewModel(productRepository) }
-    val productFavoriteState by viewModel.uiState.collectAsState()
+    val cartViewModel = rememberViewModel { CartViewModel(cartRepository = productRepository) }
+    val state by cartViewModel.uiState.collectAsState()
 
-    LaunchedEffect(Unit){
-        viewModel.sendIntent(ProductFavoriteIntent.GetFavorites)
+    LaunchedEffect(Unit) {
+        cartViewModel.sendIntent(CartIntent.GetCart)
     }
 
-    Scaffold(topBar = { TopBarComponent("Favorite") }) {
-        Box(modifier =  Modifier.padding(12.dp)) {
-            LazyColumn {
-                items(productFavoriteState.productFavorites) { product ->
-                    ProductItem(product = product) {
-                        onItemClick.invoke(it)
-                    }
-                }
-                if (productFavoriteState.productFavorites.isEmpty()) {
-                    item {
-                        Box(
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("Product not found!")
-                        }
+    Scaffold(
+        topBar = { TopBarComponent("Cart", ) }
+    ) {
+        when (val data = state.cartState) {
+            is AsyncState.Loading -> {
+                CircularProgressIndicator()
+            }
+
+            is AsyncState.Success -> {
+                val cart = data.data
+                LazyColumn {
+                    items(cart) { itemCart ->
+                        ProductItem(itemCart)
                     }
                 }
             }
+
+            is AsyncState.Failure -> {
+                val throwable = data.throwable
+                if (throwable is UnauthorizedException) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Button(
+
+                            onClick = {
+                                loginAction
+                            }
+                        ) {
+                            Text("Login")
+                        }
+                    }
+                } else {
+                    Text(throwable.message!!)
+                }
+            }
+
+            else -> {
+
+            }
         }
+
     }
 }
 
 @Composable
-fun ProductItem(product: ProductResponseEntity, onItemClick: (ProductResponseEntity) -> Unit) {
-    val imagePainter = rememberImagePainter(product.image)
+fun ProductItem(itemCart: CartItemEntity?) {
+    val imagePainter = rememberImagePainter(itemCart?.productDetail?.images!!.first())
     Row(
         modifier = Modifier.padding(bottom = 6.dp).background(
             color = Color.Black.copy(alpha = 0.3f),
             shape = RoundedCornerShape(12.dp)
-        ).clickable {
-            onItemClick.invoke(product)
-        }.padding(6.dp).fillMaxWidth().height(100.dp)
+        ).padding(6.dp).fillMaxWidth().height(100.dp)
     ) {
         Box(Modifier.width(70.dp).clip(RoundedCornerShape(8.dp))) {
             Image(
@@ -87,10 +108,10 @@ fun ProductItem(product: ProductResponseEntity, onItemClick: (ProductResponseEnt
         }
         Column {
             Text(
-                text = product.name
+                text = itemCart.productDetail.title,
             )
             Text(
-                text = product.price.toRupiah
+                text = itemCart.price.toRupiah
             )
         }
     }

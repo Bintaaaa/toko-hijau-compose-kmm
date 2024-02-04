@@ -1,10 +1,10 @@
-package com.bijan.apis.product
+package com.bijan.apis.product.dataSources
 
 import com.bijan.libraries.core.AppConfig
 import com.bijan.libraries.core.network.NetworkDataSource
 import io.ktor.client.statement.HttpResponse
 
-class ProductDataSources(
+class ProductRemoteDataSources(
     private val appConfig: AppConfig
 ) : NetworkDataSource(appConfig.baseUrl) {
 

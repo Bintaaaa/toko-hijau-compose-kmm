@@ -26,4 +26,9 @@ class ImageResourcesProvider : ImageResourcesUtils {
     override fun logos(): Painter {
         return painterResource("toko_hijau_logo.png")
     }
+
+    @Composable
+    override fun cart(): Painter {
+        return painterResource("outline_shopping_cart_24.xml")
+    }
 }

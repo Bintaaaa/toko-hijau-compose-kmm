@@ -22,6 +22,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,18 +39,19 @@ import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
-import com.bijan.apis.product.LocalProductRepository
 import com.bijan.apis.product.models.category.CategoryItemResponse
-import com.bijan.apis.product.models.product.ProductResponseModel
+import com.bijan.apis.product.models.product.ProductResponseEntity
+import com.bijan.apis.product.repository.LocalProductRepository
 import com.bijan.libraries.core.LocalAppConfig
 import com.bijan.libraries.core.state.AsyncState
 import com.bijan.libraries.core.viewModel.rememberViewModel
+import com.example.libraries.components.components.TopBarComponent
 import com.example.libraries.components.utils.toRupiah
 import com.seiko.imageloader.rememberImagePainter
 
 
 @Composable
-fun Home(onItemClick: (ProductResponseModel) -> Unit) {
+fun Home(onItemClick: (ProductResponseEntity) -> Unit, onCart: () -> Unit) {
     val appConfig = LocalAppConfig.current
     val productRepository = LocalProductRepository.current
 
@@ -71,12 +73,20 @@ fun Home(onItemClick: (ProductResponseModel) -> Unit) {
     }
 
 //    LazyVerticalStaggeredGrid()
-    Column(
-        Modifier.verticalScroll(rememberScrollState())
+    Scaffold(
+        topBar = {
+            TopBarComponent("", onCart = {
+                onCart.invoke()
+            })
+        }
     ) {
-        CategoriesSection(homeState)
-        ProductsLowPriceSection(homeState, pagingProduct) { product ->
-            onItemClick.invoke(product)
+        Column(
+            Modifier.verticalScroll(rememberScrollState())
+        ) {
+            CategoriesSection(homeState)
+            ProductsLowPriceSection(homeState, pagingProduct) { product ->
+                onItemClick.invoke(product)
+            }
         }
     }
 }
@@ -84,8 +94,8 @@ fun Home(onItemClick: (ProductResponseModel) -> Unit) {
 @Composable
 fun ProductsLowPriceSection(
     homeState: HomeState,
-    pagingProduct: LazyPagingItems<ProductResponseModel>,
-    onItemClick: (ProductResponseModel) -> Unit
+    pagingProduct: LazyPagingItems<ProductResponseEntity>,
+    onItemClick: (ProductResponseEntity) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(12.dp).heightIn(min = 300.dp, max = 1200.dp),
@@ -132,7 +142,7 @@ fun ProductsLowPriceSection(
 
 
 @Composable
-fun ProductItem(product: ProductResponseModel, onItemClick: (ProductResponseModel) -> Unit) {
+fun ProductItem(product: ProductResponseEntity, onItemClick: (ProductResponseEntity) -> Unit) {
     val imagePainter = rememberImagePainter(product.image)
     Row(
         modifier = Modifier.padding(bottom = 6.dp).background(

@@ -1,26 +1,34 @@
-package com.bijan.apis.product
+package com.bijan.apis.product.repository
 
 import androidx.compose.runtime.compositionLocalOf
+import com.bijan.apis.product.dataSources.CartRemoteDataSource
+import com.bijan.apis.product.dataSources.ProductFavoriteLocalDataSource
+import com.bijan.apis.product.dataSources.ProductRemoteDataSources
 import com.bijan.apis.product.models.ProductMapper
+import com.bijan.apis.product.models.cart.CartResponseEntity
+import com.bijan.apis.product.models.cart.CartResponseModel
 import com.bijan.apis.product.models.category.CategoriesResponse
 import com.bijan.apis.product.models.category.CategoryItemResponse
 import com.bijan.apis.product.models.product.ProductDetailEntity
 import com.bijan.apis.product.models.product.ProductDetailResponseModel
-import com.bijan.apis.product.models.product.ProductResponseModel
+import com.bijan.apis.product.models.product.ProductResponseEntity
 import com.bijan.apis.product.models.product.ProductsResponseModel
 import com.bijan.libraries.core.AppConfig
+import com.bijan.libraries.core.network.TokenDatasource
 import com.bijan.libraries.core.repository.RepositoryReducer
 import com.bijan.libraries.core.state.AsyncState
 import kotlinx.coroutines.flow.Flow
 
-class ProductRepository(private val appConfig: AppConfig) : RepositoryReducer() {
-    private val productDataSources by lazy { ProductDataSources(appConfig) }
+class ProductRepository(private val appConfig: AppConfig, private val tokenDatasource: TokenDatasource) :
+    RepositoryReducer() {
+    private val productRemoteDataSources by lazy { ProductRemoteDataSources(appConfig) }
     private val favoriteLocalDataSource by lazy { ProductFavoriteLocalDataSource() }
-    suspend fun getProducts(query: String): Flow<AsyncState<List<ProductResponseModel>>> {
+    private val cartRemoteDataSource by lazy { CartRemoteDataSource(appConfig, tokenDatasource) }
+    suspend fun getProducts(query: String): Flow<AsyncState<List<ProductResponseEntity>>> {
 
         return suspend {
-            productDataSources.getProductList(query)
-        }.reduce<ProductsResponseModel, List<ProductResponseModel>> { response ->
+            productRemoteDataSources.getProductList(query)
+        }.reduce<ProductsResponseModel, List<ProductResponseEntity>> { response ->
             if (response.data.isNullOrEmpty()) {
                 val throwable = Throwable("product is empty")
                 AsyncState.Failure(throwable)
@@ -33,7 +41,7 @@ class ProductRepository(private val appConfig: AppConfig) : RepositoryReducer() 
     }
 
     suspend fun getCategories(): Flow<AsyncState<List<CategoryItemResponse>>> {
-        return suspend { productDataSources.getCategories() }.reduce<CategoriesResponse, List<CategoryItemResponse>> { response ->
+        return suspend { productRemoteDataSources.getCategories() }.reduce<CategoriesResponse, List<CategoryItemResponse>> { response ->
             val responseData = response.data
 
             if (responseData.isNullOrEmpty()) {
@@ -48,7 +56,7 @@ class ProductRepository(private val appConfig: AppConfig) : RepositoryReducer() 
 
     suspend fun getProductDetail(id: Int): Flow<AsyncState<ProductDetailEntity>> {
         return suspend {
-            productDataSources.getProductDetail(id = id)
+            productRemoteDataSources.getProductDetail(id = id)
         }.reduce<ProductDetailResponseModel, ProductDetailEntity> { response ->
             val responseData = response.data
             val data = ProductMapper.mapResponseProductDetail(responseData!!)
@@ -57,7 +65,7 @@ class ProductRepository(private val appConfig: AppConfig) : RepositoryReducer() 
     }
 
 
-    suspend fun getProductFavorites(): Flow<List<ProductResponseModel>>{
+    suspend fun getProductFavorites(): Flow<List<ProductResponseEntity>> {
         return favoriteLocalDataSource.getProductFavorites()
     }
 
@@ -65,12 +73,26 @@ class ProductRepository(private val appConfig: AppConfig) : RepositoryReducer() 
         return favoriteLocalDataSource.getProductIsFavorite(productId)
     }
 
-    suspend fun insertFavorite(productDetail: ProductDetailEntity){
+    suspend fun insertFavorite(productDetail: ProductDetailEntity) {
         return favoriteLocalDataSource.insertData(productDetail)
     }
 
-    suspend fun deleteFavorite(productId: Int){
+    suspend fun deleteFavorite(productId: Int) {
         favoriteLocalDataSource.removeProduct(productId)
+    }
+
+    suspend fun getCart(): Flow<AsyncState<List<CartResponseEntity>>> {
+        return suspend {
+            cartRemoteDataSource.getCart()
+        }.reduce<CartResponseModel, List<CartResponseEntity>> { response ->
+            val responseData = response.data.orEmpty()
+
+            if (responseData.isEmpty()) {
+                AsyncState.Failure(Throwable("Cart is empty"))
+            } else {
+                AsyncState.Success(ProductMapper.mapResponseToCart(response.data?.filterNotNull()))
+            }
+        }
     }
 
 }

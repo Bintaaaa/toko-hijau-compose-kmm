@@ -1,4 +1,3 @@
-
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.pager.HorizontalPager
@@ -17,6 +16,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.bintaaaa.features.favorite.FavoriteScreen
 import com.example.features.home.Home
+import com.example.libraries.components.components.TopBarComponent
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.navigation.Navigator
 
@@ -40,7 +40,7 @@ fun RowScope.BottomScreenItem(item: ItemBottomScreen, paggerState: PagerState) {
     BottomNavigationItem(
         selected = isSelected,
         onClick = {
-           val page = when (item) {
+            val page = when (item) {
                 ItemBottomScreen.HOME -> 0
                 ItemBottomScreen.FAVORITE -> 1
             }
@@ -68,18 +68,23 @@ fun BottomScreen(navigator: Navigator) {
         0 -> {
             tabNavigator.currentScreen = ItemBottomScreen.HOME
         }
+
         1 -> {
             tabNavigator.currentScreen = ItemBottomScreen.FAVORITE
         }
 
     }
 
-    Scaffold(bottomBar = {
-        BottomNavigation {
-            BottomScreenItem(ItemBottomScreen.HOME, paggerState)
-            BottomScreenItem(ItemBottomScreen.FAVORITE, paggerState)
-        }
-    }) {
+    Scaffold(
+        topBar = {
+            TopBarComponent("")
+        },
+        bottomBar = {
+            BottomNavigation {
+                BottomScreenItem(ItemBottomScreen.HOME, paggerState)
+                BottomScreenItem(ItemBottomScreen.FAVORITE, paggerState)
+            }
+        }) {
 
         HorizontalPager(
             state = paggerState,
@@ -87,9 +92,11 @@ fun BottomScreen(navigator: Navigator) {
         ) { index ->
             when (index) {
                 0 -> {
-                    Home {
+                    Home(onItemClick = {
                         navigator.navigate("/detail/${it.id}")
-                    }
+                    }, onCart = {
+                        navigator.navigate("/cart")
+                    })
                 }
 
                 1 -> {

@@ -3,7 +3,7 @@ package com.example.features.home
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.bijan.apis.product.ProductRepository
+import com.bijan.apis.product.repository.ProductRepository
 import com.bijan.libraries.core.AppConfig
 import com.bijan.libraries.core.state.AsyncState
 import com.bijan.libraries.core.state.Intent
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class HomeViewModel(private val productRepository: ProductRepository,private val appConfig: AppConfig) :
+class HomeViewModel(private val productRepository: ProductRepository, private val appConfig: AppConfig) :
     ViewModel<HomeState, HomeIntent>(HomeState()) {
 
         private fun splash(){
