@@ -1,6 +1,5 @@
 package com.example.libraries.components.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +9,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,11 +27,15 @@ fun TopBarComponent(
     val imageResourceProvider = LocalImageResouceUtils.current
 
     Row(
-        modifier = Modifier.fillMaxWidth().padding(12.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp,),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
+
     ) {
-        Row {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             if (onBack != null) {
                 IconButton(
                     onClick = {
@@ -51,13 +56,15 @@ fun TopBarComponent(
             )
         }
         if (onCart != null) {
-            Text(
-                text = "Cart",
-                Modifier.clickable{
-                    onCart.invoke()
-                }
-            )
-
+            IconButton(
+                onClick = onCart,
+            ){
+                Icon(
+                    imageVector = Icons.Outlined.ShoppingCart,
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
         }
     }
 }

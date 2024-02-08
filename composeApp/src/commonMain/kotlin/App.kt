@@ -102,6 +102,9 @@ fun App() {
                                 onCart = {
                                     navigator.navigate("/cart")
                                 },
+                                onBack = {
+                                    navigator.popBackStack()
+                                }
                             )
                         }
 

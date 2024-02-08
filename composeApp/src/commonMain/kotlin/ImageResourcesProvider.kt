@@ -29,6 +29,11 @@ class ImageResourcesProvider : ImageResourcesUtils {
 
     @Composable
     override fun cart(): Painter {
-        return painterResource("outline_shopping_cart_24.xml")
+        return painterResource("round_shopping_cart_24.xml")
+    }
+
+    @Composable
+    override  fun profile(): Painter{
+        return painterResource("profile_blank.png")
     }
 }

@@ -1,3 +1,4 @@
+
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.pager.HorizontalPager
@@ -16,7 +17,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.bintaaaa.features.favorite.FavoriteScreen
 import com.example.features.home.Home
-import com.example.libraries.components.components.TopBarComponent
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.navigation.Navigator
 
@@ -76,9 +76,6 @@ fun BottomScreen(navigator: Navigator) {
     }
 
     Scaffold(
-        topBar = {
-            TopBarComponent("")
-        },
         bottomBar = {
             BottomNavigation {
                 BottomScreenItem(ItemBottomScreen.HOME, paggerState)

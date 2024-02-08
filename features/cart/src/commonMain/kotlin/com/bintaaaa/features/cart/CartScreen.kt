@@ -37,7 +37,7 @@ import com.example.libraries.components.utils.toRupiah
 import com.seiko.imageloader.rememberImagePainter
 
 @Composable
-fun CartScreen(loginAction: () -> Unit, onCart: () -> Unit) {
+fun CartScreen(loginAction: () -> Unit, onCart: () -> Unit, onBack: () -> Unit ) {
     val productRepository = LocalProductRepository.current
     val cartViewModel = rememberViewModel { CartViewModel(cartRepository = productRepository) }
     val state by cartViewModel.uiState.collectAsState()
@@ -47,7 +47,7 @@ fun CartScreen(loginAction: () -> Unit, onCart: () -> Unit) {
     }
 
     Scaffold(
-        topBar = { TopBarComponent("Cart", ) }
+        topBar = { TopBarComponent("Cart", onBack = onBack ) }
     ) {
         when (val data = state.cartState) {
             is AsyncState.Loading -> {
@@ -58,7 +58,9 @@ fun CartScreen(loginAction: () -> Unit, onCart: () -> Unit) {
                 val cart = data.data
                 LazyColumn {
                     items(cart) { itemCart ->
-                        ProductItem(itemCart)
+                        Box(modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp)) {
+                            ProductItem(itemCart)
+                        }
                     }
                 }
             }
