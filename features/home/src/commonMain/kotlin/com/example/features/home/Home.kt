@@ -1,13 +1,12 @@
 package com.example.features.home
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -77,6 +76,13 @@ fun Home(onItemClick: (ProductResponseEntity) -> Unit, onCart: () -> Unit) {
             Modifier.verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.Start,
         ) {
+            Text(
+                modifier = Modifier.padding(12.dp),
+                text = "Pilihan kategori", style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
+            )
             CategoriesSection(homeState)
             Text(
                 modifier = Modifier.padding(12.dp),
@@ -142,14 +148,12 @@ fun ProductsLowPriceSection(
 }
 
 
-
-
 @Composable
 fun CategoriesSection(homeState: HomeState) {
     val stateGrid = rememberLazyGridState()
 
     LazyVerticalGrid(
-        modifier = Modifier.height(100.dp).padding(6.dp),
+        modifier = Modifier.height(70.dp).padding(6.dp),
         columns = GridCells.Fixed(4),
         state = stateGrid,
         userScrollEnabled = false,
@@ -190,13 +194,14 @@ fun CategoriesSection(homeState: HomeState) {
 fun CategoryItem(categoryItemResponse: CategoryItemResponse) {
     Column {
         Box(
-            modifier = Modifier.padding(6.dp).size(80.dp).fillMaxWidth()
-                .background(color = Color.Black.copy(alpha = 0.3f), shape = RoundedCornerShape(6.dp)).padding(6.dp),
+            modifier = Modifier.padding(6.dp).heightIn(min = 50.dp).fillMaxWidth()
+                .border(width = 0.5.dp, color = Color.Gray.copy(alpha = 0.3f), shape = RoundedCornerShape(6.dp))
+                .padding(6.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = categoryItemResponse.name,
-                fontSize = 12.sp,
+                fontSize = 10.sp,
                 textAlign = TextAlign.Center
             )
         }
