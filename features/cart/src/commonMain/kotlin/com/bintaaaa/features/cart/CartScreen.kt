@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -21,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -32,6 +30,7 @@ import com.bijan.apis.product.repository.LocalProductRepository
 import com.bijan.libraries.core.repository.UnauthorizedException
 import com.bijan.libraries.core.state.AsyncState
 import com.bijan.libraries.core.viewModel.rememberViewModel
+import com.example.libraries.components.components.GoToLoginComponent
 import com.example.libraries.components.components.TopBarComponent
 import com.example.libraries.components.utils.toRupiah
 import com.seiko.imageloader.rememberImagePainter
@@ -68,15 +67,8 @@ fun CartScreen(loginAction: () -> Unit, onCart: () -> Unit, onBack: () -> Unit )
             is AsyncState.Failure -> {
                 val throwable = data.throwable
                 if (throwable is UnauthorizedException) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Button(
-
-                            onClick = {
-                                loginAction
-                            }
-                        ) {
-                            Text("Login")
-                        }
+                    GoToLoginComponent{
+                        loginAction.invoke()
                     }
                 } else {
                     Text(throwable.message!!)

@@ -8,7 +8,6 @@ import com.bijan.libraries.core.AppConfig
 import com.bijan.libraries.core.state.AsyncState
 import com.bijan.libraries.core.state.Intent
 import com.bijan.libraries.core.viewModel.ViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -18,13 +17,13 @@ class HomeViewModel(private val productRepository: ProductRepository, private va
 
         private fun splash(){
             viewModelScope.launch {
-                delay(2000).apply {
+
                     updateUiState {
                         copy(
                             splash = AsyncState.Success(true)
                         )
                     }
-                }
+
 
             }
         }

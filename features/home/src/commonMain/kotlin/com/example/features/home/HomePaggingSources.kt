@@ -45,7 +45,6 @@ class HomePaggingSources(
                 .map {
                     ProductMapper.mapItemResponseToItemList(it)
                 }
-            delay(2000)
 
             when {
                 dataResponse.status.isSuccess() -> {

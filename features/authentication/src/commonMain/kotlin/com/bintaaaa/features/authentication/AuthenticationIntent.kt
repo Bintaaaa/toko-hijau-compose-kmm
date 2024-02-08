@@ -8,4 +8,7 @@ sealed class AuthenticationIntent : Intent {
     data class UpdateName(val name: String) : AuthenticationIntent()
 
     data class UpdatePassword(val password: String) : AuthenticationIntent()
+
+    data object IsLogin : AuthenticationIntent()
+    data object Logout : AuthenticationIntent()
 }

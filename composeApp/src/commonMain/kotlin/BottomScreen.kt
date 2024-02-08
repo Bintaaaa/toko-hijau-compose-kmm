@@ -14,8 +14,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.derivedStateOf
@@ -29,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import com.bintaaaa.features.authentication.ProfileScreen
 import com.bintaaaa.features.favorite.FavoriteScreen
 import com.example.features.home.Home
 import kotlinx.coroutines.launch
@@ -36,7 +39,7 @@ import moe.tlaster.precompose.navigation.Navigator
 
 
 enum class ItemBottomScreen {
-    HOME, FAVORITE
+    HOME, FAVORITE, PROFILE
 }
 
 class BottomScreenNavigator {
@@ -62,6 +65,7 @@ fun RowScope.BottomScreenItem(
             val page = when (item) {
                 ItemBottomScreen.HOME -> 0
                 ItemBottomScreen.FAVORITE -> 1
+                ItemBottomScreen.PROFILE -> 2
             }
             scope.launch {
                 paggerState.animateScrollToPage(page)
@@ -89,7 +93,7 @@ fun RowScope.BottomScreenItem(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BottomScreen(navigator: Navigator) {
-    val paggerState = rememberPagerState { 2 }
+    val paggerState = rememberPagerState { 3 }
 
     val tabNavigator = LocalBottomScreen.current
 
@@ -100,6 +104,10 @@ fun BottomScreen(navigator: Navigator) {
 
         1 -> {
             tabNavigator.currentScreen = ItemBottomScreen.FAVORITE
+        }
+
+        2 -> {
+            tabNavigator.currentScreen = ItemBottomScreen.PROFILE
         }
 
     }
@@ -117,6 +125,10 @@ fun BottomScreen(navigator: Navigator) {
             BottomScreenItem(
                 ItemBottomScreen.FAVORITE, paggerState, iconInActive = Icons.Outlined.Favorite,
                 iconActive = Icons.Rounded.Favorite,
+            )
+            BottomScreenItem(
+                ItemBottomScreen.PROFILE, paggerState, iconInActive = Icons.Outlined.Person,
+                iconActive = Icons.Rounded.Person,
             )
         }
     }) {
@@ -137,6 +149,12 @@ fun BottomScreen(navigator: Navigator) {
                 1 -> {
                     FavoriteScreen {
                         navigator.navigate("/detail/${it.id}")
+                    }
+                }
+
+                2 -> {
+                    ProfileScreen {
+                        navigator.navigate("/login")
                     }
                 }
             }

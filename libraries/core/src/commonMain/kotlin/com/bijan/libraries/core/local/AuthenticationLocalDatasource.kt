@@ -12,6 +12,10 @@ class AuthenticationLocalDatasource(
     fun saveToken(token: String){
         valueDataSources.setString("token", token)
     }
+
+    fun deleteToken(){
+        valueDataSources.removeValue("token")
+    }
 }
 
 val LocalAuthenticationLocalDatasource = compositionLocalOf<AuthenticationLocalDatasource> {

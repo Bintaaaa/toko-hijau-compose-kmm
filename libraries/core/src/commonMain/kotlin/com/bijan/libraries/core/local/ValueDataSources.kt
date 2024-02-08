@@ -13,6 +13,10 @@ class ValueDataSources {
     fun getString(key: String): String {
         return settings.getString(key, "")
     }
+
+    fun removeValue(key: String){
+        return settings.remove(key)
+    }
 }
 
 val LocalValueDataSources = compositionLocalOf<ValueDataSources> { error("value data sources not provided") }

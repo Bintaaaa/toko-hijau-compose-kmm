@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.bijan.libraries.core.local.LocalAuthenticationLocalDatasource
 import com.bijan.libraries.core.state.AsyncState
 import com.bijan.libraries.core.viewModel.rememberViewModel
 import com.bintaaaa.apis.authentication.LocalAuthenticationRepository
@@ -28,7 +29,8 @@ import kotlinx.coroutines.launch
 fun LoginScreen(onRedirect: () -> Unit, guestMode: () -> Unit) {
 
     val authenticationRepository = LocalAuthenticationRepository.current
-    val viewModel = rememberViewModel { AuthenticationViewModel(authenticationRepository) }
+    val authenticationLocalDatasource = LocalAuthenticationLocalDatasource.current
+    val viewModel = rememberViewModel { AuthenticationViewModel(authenticationRepository, authenticationLocalDatasource) }
     val loginState by viewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
