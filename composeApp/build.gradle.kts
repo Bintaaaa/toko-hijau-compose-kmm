@@ -41,6 +41,7 @@ kotlin {
             implementation(compose.components.resources)
             implementation(projects.features.favorite)
             implementation(projects.features.authentication)
+            implementation(projects.features.cart)
             implementation(projects.apis.product)
             implementation(projects.apis.authentication)
             implementation(projects.features.home)

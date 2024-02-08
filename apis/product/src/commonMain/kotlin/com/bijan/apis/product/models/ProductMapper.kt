@@ -1,22 +1,25 @@
 package com.bijan.apis.product.models
 
+import com.bijan.apis.product.models.cart.CartItemEntity
+import com.bijan.apis.product.models.cart.CartResponseEntity
+import com.bijan.apis.product.models.cart.CartResponseModel
 import com.bijan.apis.product.models.category.CategoriesResponse
 import com.bijan.apis.product.models.category.CategoryItemResponse
 import com.bijan.apis.product.models.local.ProductRealm
 import com.bijan.apis.product.models.product.ProductDetailEntity
 import com.bijan.apis.product.models.product.ProductDetailResponseModel
-import com.bijan.apis.product.models.product.ProductResponseModel
+import com.bijan.apis.product.models.product.ProductResponseEntity
 import com.bijan.apis.product.models.product.ProductsResponseModel
 import com.bijan.apis.product.models.product.ProductsResponseModel.ProductItemResponseModel
 import com.bijan.apis.product.models.product.UserReview
 
 object ProductMapper {
-    fun mapResponseToList(productListResponse: ProductsResponseModel): List<ProductResponseModel> {
+    fun mapResponseToList(productListResponse: ProductsResponseModel): List<ProductResponseEntity> {
         return productListResponse?.data?.map { mapItemResponseToItemList(it) }.orEmpty()
     }
 
-fun mapItemResponseToItemList(itemResponse: ProductItemResponseModel?): ProductResponseModel {
-        return ProductResponseModel(
+fun mapItemResponseToItemList(itemResponse: ProductItemResponseModel?): ProductResponseEntity {
+        return ProductResponseEntity(
             id = itemResponse?.id ?: 0,
             name = itemResponse?.name ?: "--",
             price = itemResponse?.price ?: 0.0,
@@ -61,12 +64,35 @@ fun mapItemResponseToItemList(itemResponse: ProductItemResponseModel?): ProductR
     }
 
 
-    fun realmMapToItem(realm: ProductRealm): ProductResponseModel{
-        return ProductResponseModel(
+    fun realmMapToItem(realm: ProductRealm): ProductResponseEntity{
+        return ProductResponseEntity(
             id = realm.id,
             name = realm.name,
             price = realm.price,
             image = realm.image,
+        )
+    }
+
+    fun mapResponseToCart(response: List<CartResponseModel.DataResponse>?): List<CartResponseEntity> {
+        return response?.map {
+            CartResponseEntity(
+                productId = it.productId ?: 0,
+                price = it.price ?: 0.0,
+                discount = it.discount ?: 0,
+                amount = it.amount ?: 0.0,
+                quantity = it.quantity ?: 0,
+            )
+        }.orEmpty()
+    }
+
+    fun mapCartToCartProduct(cart: CartResponseEntity, productDetail: ProductDetailEntity): CartItemEntity {
+        return CartItemEntity(
+            amount = cart.amount,
+            discount = cart.discount,
+            price = cart.price,
+            productId = cart.productId,
+            quantity = cart.quantity,
+            productDetail = productDetail
         )
     }
 }

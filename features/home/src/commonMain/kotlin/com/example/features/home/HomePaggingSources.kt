@@ -2,9 +2,9 @@ package com.example.features.home
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.bijan.apis.product.ProductDataSources
+import com.bijan.apis.product.dataSources.ProductRemoteDataSources
 import com.bijan.apis.product.models.ProductMapper
-import com.bijan.apis.product.models.product.ProductResponseModel
+import com.bijan.apis.product.models.product.ProductResponseEntity
 import com.bijan.apis.product.models.product.ProductsResponseModel
 import com.bijan.libraries.core.AppConfig
 import io.ktor.client.call.body
@@ -15,18 +15,18 @@ import kotlinx.coroutines.delay
 class HomePaggingSources(
     appConfig: AppConfig,
     private val query: String
-) : PagingSource<Int, ProductResponseModel>() {
+) : PagingSource<Int, ProductResponseEntity>() {
 
-    private val dataSources by lazy { ProductDataSources(appConfig) }
+    private val dataSources by lazy { ProductRemoteDataSources(appConfig) }
 
-    override fun getRefreshKey(state: PagingState<Int, ProductResponseModel>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, ProductResponseEntity>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
         }
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ProductResponseModel> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ProductResponseEntity> {
         val page = params.key ?: 1
         val queryPage = if (query.isNotEmpty()) {
             "$query&page=$page"
@@ -45,7 +45,6 @@ class HomePaggingSources(
                 .map {
                     ProductMapper.mapItemResponseToItemList(it)
                 }
-            delay(2000)
 
             when {
                 dataResponse.status.isSuccess() -> {

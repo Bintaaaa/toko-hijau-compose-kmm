@@ -11,7 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.bijan.apis.product.LocalProductRepository
+import com.bijan.apis.product.repository.LocalProductRepository
 import com.bijan.libraries.core.LocalAppConfig
 import com.bijan.libraries.core.state.AsyncState
 import com.bijan.libraries.core.viewModel.rememberViewModel

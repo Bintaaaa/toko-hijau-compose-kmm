@@ -1,5 +1,6 @@
 package com.bintaaaa.features.authentication
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.bijan.libraries.core.local.LocalAuthenticationLocalDatasource
 import com.bijan.libraries.core.state.AsyncState
 import com.bijan.libraries.core.viewModel.rememberViewModel
 import com.bintaaaa.apis.authentication.LocalAuthenticationRepository
@@ -24,10 +26,11 @@ import com.example.libraries.components.components.TopBarComponent
 import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen(onRedirect: () -> Unit) {
+fun LoginScreen(onRedirect: () -> Unit, guestMode: () -> Unit) {
 
     val authenticationRepository = LocalAuthenticationRepository.current
-    val viewModel = rememberViewModel { AuthenticationViewModel(authenticationRepository) }
+    val authenticationLocalDatasource = LocalAuthenticationLocalDatasource.current
+    val viewModel = rememberViewModel { AuthenticationViewModel(authenticationRepository, authenticationLocalDatasource) }
     val loginState by viewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
@@ -71,6 +74,10 @@ fun LoginScreen(onRedirect: () -> Unit) {
                     viewModel.sendIntent(AuthenticationIntent.UpdatePassword(password))
                 }
             )
+
+            Text(modifier = Modifier.clickable {
+                guestMode.invoke()
+            }, text = "Masuk Sebagai Tamu")
 
             ButtonSubmit(viewModel, loginState)
         }

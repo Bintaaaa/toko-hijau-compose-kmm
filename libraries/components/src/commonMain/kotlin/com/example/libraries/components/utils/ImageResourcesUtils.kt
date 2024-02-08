@@ -16,6 +16,12 @@ interface ImageResourcesUtils {
 
     @Composable
     fun logos(): Painter
+
+    @Composable
+    fun cart(): Painter
+
+    @Composable
+    fun profile(): Painter
 }
 
 val LocalImageResouceUtils = compositionLocalOf <ImageResourcesUtils>{  error("Image resource not provided")  }

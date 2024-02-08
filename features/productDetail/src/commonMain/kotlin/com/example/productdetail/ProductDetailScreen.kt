@@ -21,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
@@ -29,9 +28,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bijan.apis.product.ProductRepository
 import com.bijan.apis.product.models.product.UserReview
-import com.bijan.libraries.core.LocalAppConfig
+import com.bijan.apis.product.repository.LocalProductRepository
 import com.bijan.libraries.core.state.AsyncState
 import com.bijan.libraries.core.viewModel.rememberViewModel
 import com.example.libraries.components.components.TopBarComponent
@@ -42,10 +40,8 @@ import com.seiko.imageloader.rememberImagePainter
 
 @Composable
 fun ProductDetailScreen(id: String, actionBack: () -> Unit) {
-    val appConfig = LocalAppConfig.current
-    val productRepository = remember {
-        ProductRepository(appConfig)
-    }
+    val productRepository  = LocalProductRepository.current
+
 
     val productDetailViewModel = rememberViewModel {
         ProductDetailViewModel(productRepository)

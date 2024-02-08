@@ -1,9 +1,9 @@
-package com.bijan.apis.product
+package com.bijan.apis.product.dataSources
 
 import com.bijan.apis.product.models.ProductMapper
 import com.bijan.apis.product.models.local.ProductRealm
 import com.bijan.apis.product.models.product.ProductDetailEntity
-import com.bijan.apis.product.models.product.ProductResponseModel
+import com.bijan.apis.product.models.product.ProductResponseEntity
 import com.bijan.libraries.core.local.LocalDataSources
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -22,7 +22,7 @@ class ProductFavoriteLocalDataSource : LocalDataSources(ProductRealm::class) {
         return getObjectExistById(ProductRealm::class, productId)
     }
 
-    suspend fun getProductFavorites(): Flow<List<ProductResponseModel>> {
+    suspend fun getProductFavorites(): Flow<List<ProductResponseEntity>> {
         return getObjects(ProductRealm::class)
             .map {
                 it.map { product ->

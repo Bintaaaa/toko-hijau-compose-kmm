@@ -8,4 +8,5 @@ data class AuthenticationState(
     val name: String = "",
     val password: String = "",
     val isShowPassword: Boolean = false,
+    val isLogin: Boolean = false,
 )

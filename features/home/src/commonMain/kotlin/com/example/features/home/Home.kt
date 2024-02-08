@@ -1,18 +1,12 @@
 package com.example.features.home
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -22,6 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,27 +24,27 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
-import com.bijan.apis.product.LocalProductRepository
 import com.bijan.apis.product.models.category.CategoryItemResponse
-import com.bijan.apis.product.models.product.ProductResponseModel
+import com.bijan.apis.product.models.product.ProductResponseEntity
+import com.bijan.apis.product.repository.LocalProductRepository
 import com.bijan.libraries.core.LocalAppConfig
 import com.bijan.libraries.core.state.AsyncState
 import com.bijan.libraries.core.viewModel.rememberViewModel
-import com.example.libraries.components.utils.toRupiah
-import com.seiko.imageloader.rememberImagePainter
+import com.example.libraries.components.components.ProductItemComponent
+import com.example.libraries.components.components.TopBarComponent
 
 
 @Composable
-fun Home(onItemClick: (ProductResponseModel) -> Unit) {
+fun Home(onItemClick: (ProductResponseEntity) -> Unit, onCart: () -> Unit) {
     val appConfig = LocalAppConfig.current
     val productRepository = LocalProductRepository.current
 
@@ -70,13 +65,35 @@ fun Home(onItemClick: (ProductResponseModel) -> Unit) {
         )
     }
 
-//    LazyVerticalStaggeredGrid()
-    Column(
-        Modifier.verticalScroll(rememberScrollState())
+    Scaffold(
+        topBar = {
+            TopBarComponent("Selamat Datang di Toko Hijau!", onCart = {
+                onCart.invoke()
+            })
+        }
     ) {
-        CategoriesSection(homeState)
-        ProductsLowPriceSection(homeState, pagingProduct) { product ->
-            onItemClick.invoke(product)
+        Column(
+            Modifier.verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.Start,
+        ) {
+            Text(
+                modifier = Modifier.padding(12.dp),
+                text = "Pilihan kategori", style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
+            )
+            CategoriesSection(homeState)
+            Text(
+                modifier = Modifier.padding(12.dp),
+                text = "Produk relevan", style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
+            )
+            ProductsLowPriceSection(homeState, pagingProduct) { product ->
+                onItemClick.invoke(product)
+            }
         }
     }
 }
@@ -84,17 +101,17 @@ fun Home(onItemClick: (ProductResponseModel) -> Unit) {
 @Composable
 fun ProductsLowPriceSection(
     homeState: HomeState,
-    pagingProduct: LazyPagingItems<ProductResponseModel>,
-    onItemClick: (ProductResponseModel) -> Unit
+    pagingProduct: LazyPagingItems<ProductResponseEntity>,
+    onItemClick: (ProductResponseEntity) -> Unit
 ) {
     Column(
-        modifier = Modifier.padding(12.dp).heightIn(min = 300.dp, max = 1200.dp),
+        modifier = Modifier.padding(horizontal = 12.dp).heightIn(min = 300.dp, max = 1200.dp),
     ) {
         LazyColumn {
             items(pagingProduct.itemCount) { index ->
                 val item = pagingProduct[index]
                 if (item != null) {
-                    ProductItem(item) { product ->
+                    ProductItemComponent(item) { product ->
                         onItemClick.invoke(product)
                     }
                 }
@@ -132,41 +149,11 @@ fun ProductsLowPriceSection(
 
 
 @Composable
-fun ProductItem(product: ProductResponseModel, onItemClick: (ProductResponseModel) -> Unit) {
-    val imagePainter = rememberImagePainter(product.image)
-    Row(
-        modifier = Modifier.padding(bottom = 6.dp).background(
-            color = Color.Black.copy(alpha = 0.3f),
-            shape = RoundedCornerShape(12.dp)
-        ).clickable {
-            onItemClick.invoke(product)
-        }.padding(6.dp).fillMaxWidth().height(100.dp)
-    ) {
-        Box(Modifier.width(70.dp).clip(RoundedCornerShape(8.dp))) {
-            Image(
-                painter = imagePainter,
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
-        }
-        Column {
-            Text(
-                text = product.name
-            )
-            Text(
-                text = product.price.toRupiah
-            )
-        }
-    }
-}
-
-@Composable
 fun CategoriesSection(homeState: HomeState) {
     val stateGrid = rememberLazyGridState()
 
     LazyVerticalGrid(
-        modifier = Modifier.height(100.dp).padding(6.dp),
+        modifier = Modifier.height(70.dp).padding(6.dp),
         columns = GridCells.Fixed(4),
         state = stateGrid,
         userScrollEnabled = false,
@@ -207,13 +194,14 @@ fun CategoriesSection(homeState: HomeState) {
 fun CategoryItem(categoryItemResponse: CategoryItemResponse) {
     Column {
         Box(
-            modifier = Modifier.padding(6.dp).size(80.dp).fillMaxWidth()
-                .background(color = Color.Black.copy(alpha = 0.3f), shape = RoundedCornerShape(6.dp)).padding(6.dp),
+            modifier = Modifier.padding(6.dp).heightIn(min = 50.dp).fillMaxWidth()
+                .border(width = 0.5.dp, color = Color.Gray.copy(alpha = 0.3f), shape = RoundedCornerShape(6.dp))
+                .padding(6.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = categoryItemResponse.name,
-                fontSize = 12.sp,
+                fontSize = 10.sp,
                 textAlign = TextAlign.Center
             )
         }
