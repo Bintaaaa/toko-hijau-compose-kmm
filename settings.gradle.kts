@@ -19,3 +19,13 @@ dependencyResolutionManagement {
 }
 
 include(":composeApp")
+include(":apis:product")
+include(":features:home")
+include(":libraries:core")
+include(":features:productDetail")
+include(":libraries:libraries:components")
+include(":libraries:components")
+include(":features:favorite")
+include(":apis:authentication")
+include(":features:authentication")
+include(":features:cart")
